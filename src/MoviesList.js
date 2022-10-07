@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Movie from "./Movie";
 
 function MoviesList() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('')
+  const [error, setError] = useState("");
 
-  async function fetchHandler(e) {
+  const fetchHandler = useCallback(async function (e) {
     setIsLoading(true);
     e.preventDefault();
     try {
       let response = await fetch("https://swapi.dev/api/films/");
       if (!response.ok) {
-        throw new Error("something went wrong...!");
+        throw new Error("something went wrong...Retrying");
       }
       let data = await response.json();
       let movies = data.results;
@@ -31,10 +31,26 @@ function MoviesList() {
     }
 
     setIsLoading(false);
+  }, []);
+
+  let id = 0;
+
+  useEffect(() => {
+    id = setInterval(() => {
+      fetchHandler();
+    }, 5000);
+    cancelRetrying(id);
+  }, [fetchHandler]);
+
+  function cancelRetrying(id) {
+    clearInterval(id);
+    setError('')
   }
+
   return (
     <div>
       <button onClick={fetchHandler}>Fetch</button>
+      <button onClick={cancelRetrying}>Cancel</button>
       {isLoading && <p>Loading...</p>}
       {error && <p>{error}</p>}
       <Movie movieList={movies} />
