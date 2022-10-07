@@ -2,10 +2,12 @@ import { useState } from "react";
 import Movie from "./Movie";
 
 function MoviesList() {
-    
+
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false)
 
   async function fetchHandler(e) {
+    setIsLoading(true)
     e.preventDefault();
     let response = await fetch("https://swapi.dev/api/films/");
     let data = await response.json();
@@ -21,10 +23,12 @@ function MoviesList() {
     });
 
     setMovies(tranformedData);
+    setIsLoading(false)
   }
   return (
     <div>
       <button onClick={fetchHandler}>Fetch</button>
+      {isLoading && <p>Loading...</p>}
       <Movie movieList={movies} />
     </div>
   );
