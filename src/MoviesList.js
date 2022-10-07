@@ -6,9 +6,8 @@ function MoviesList() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchHandler = useCallback(async function (e) {
+  const fetchHandler = useCallback(async function () {
     setIsLoading(true);
-    e.preventDefault();
     try {
       let response = await fetch("https://swapi.dev/api/films/");
       if (!response.ok) {
@@ -33,13 +32,8 @@ function MoviesList() {
     setIsLoading(false);
   }, []);
 
-  let id = 0;
-
   useEffect(() => {
-    id = setInterval(() => {
-      fetchHandler();
-    }, 5000);
-    cancelRetrying(id);
+    fetchHandler()
   }, [fetchHandler]);
 
   function cancelRetrying(id) {
