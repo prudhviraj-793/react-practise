@@ -9,22 +9,21 @@ function MoviesList() {
   const fetchHandler = useCallback(async function () {
     setIsLoading(true);
     try {
-      let response = await fetch("https://swapi.dev/api/films/");
+      let response = await fetch("https://adding-movie-default-rtdb.firebaseio.com/movies.json");
       if (!response.ok) {
         throw new Error("something went wrong...Retrying");
       }
       let data = await response.json();
-      let movies = data.results;
-
-      let tranformedData = movies.map((movie) => {
-        return {
-          id: movie["episode_id"],
-          title: movie.title,
-          openingText: movie["opening_crawl"],
-          releaseDate: movie["release_date"],
-        };
-      });
-      setMovies(tranformedData);
+      const loadedMovies = []
+      for (let key in data) {
+        loadedMovies.push({
+            id: key,
+            title: data[key].title,
+            openingText: data[key].openingText,
+            releaseDate: data[key].releaseDate
+        })
+      }
+      setMovies(loadedMovies);
     } catch (error) {
       setError(error.message);
     }

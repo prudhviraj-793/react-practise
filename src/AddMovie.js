@@ -15,15 +15,24 @@ function AddMovie() {
         setReleaseDate(e.target.value)
     }
 
-    function addMovie(e) {
+    async function addMovie(e) {
         e.preventDefault()
         let movie = {
-            id: Math.random().toString(),
             title: title,
             openingText: openingText,
             releaseDate: releaseDate
         }
-        console.log(movie)
+        const response = await fetch('https://adding-movie-default-rtdb.firebaseio.com/movies.json', {
+            method: 'POST',
+            body: JSON.stringify(movie),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+
+        })
+
+        const data = await response.json()
+        console.log(data)
     }
 
     return (
